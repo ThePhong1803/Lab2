@@ -103,11 +103,24 @@ int main(void)
 
   HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, RESET);
 
-
   while (1)
   {
     /* USER CODE END WHILE */
+	  second++;
+	  if(second >= 60){
+		  second = 0;
+		  minute++;
+	  }
+	  if(minute >= 60){
+		  minute = 0;
+		  hour++;
+	  }
+	  if(hour >= 24){
+		  hour = 0;
+	  }
 
+	  updateClockBuffer();
+	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
