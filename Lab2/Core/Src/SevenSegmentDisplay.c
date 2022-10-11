@@ -105,19 +105,52 @@ void updateClockBuffer(){
 
 int index_led_matrix = 0;
 int index_row = 0;
-uint8_t matrix_buffer[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+uint8_t matrix_buffer[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-void updateMatrixBuffer(){
-	//this is a demo, only display letter a
-	int char_A[8] = {0xe7, 0xc3, 0x99, 0x99, 0x81, 0x81, 0x99, 0x99};
-	matrix_buffer[0] = char_A[0];
-	matrix_buffer[1] = char_A[1];
-	matrix_buffer[2] = char_A[2];
-	matrix_buffer[3] = char_A[3];
-	matrix_buffer[4] = char_A[4];
-	matrix_buffer[5] = char_A[5];
-	matrix_buffer[6] = char_A[6];
-	matrix_buffer[7] = char_A[7];
+void setMatrixCharacter(int char_index){
+	//this is a demo letter A, B, C, D, E, F
+	matrix_buffer[0] = charRom[char_index][0];
+	matrix_buffer[1] = charRom[char_index][1];
+	matrix_buffer[2] = charRom[char_index][2];
+	matrix_buffer[3] = charRom[char_index][3];
+	matrix_buffer[4] = charRom[char_index][4];
+	matrix_buffer[5] = charRom[char_index][5];
+	matrix_buffer[6] = charRom[char_index][6];
+	matrix_buffer[7] = charRom[char_index][7];
+}
+
+void animationShiftLeft(){
+	int a = 0x80;
+	a = a & matrix_buffer[0];
+	matrix_buffer[0] = (matrix_buffer[0] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[1];
+	matrix_buffer[1] = (matrix_buffer[1] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[2];
+	matrix_buffer[2] = (matrix_buffer[2] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[3];
+	matrix_buffer[3] = (matrix_buffer[3] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[4];
+	matrix_buffer[4] = (matrix_buffer[4] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[5];
+	matrix_buffer[5] = (matrix_buffer[5] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[6];
+	matrix_buffer[6] = (matrix_buffer[6] << 1) + (a >> 7);
+
+	a = 0x80;
+	a = a & matrix_buffer[7];
+	matrix_buffer[7] = (matrix_buffer[7] << 1) + (a >> 7);
 }
 
 void setRowPin(){
@@ -213,4 +246,22 @@ void updateLEDMatrix(){
 			break;
 	}
 	index_led_matrix = (index_led_matrix + 1) % MAX_LED_MATRIX;
+}
+
+void clearMatrix(){
+	HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
+	HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
+	HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
+	HAL_GPIO_WritePin(ENM3_GPIO_Port, ENM3_Pin, SET);
+	HAL_GPIO_WritePin(ENM4_GPIO_Port, ENM4_Pin, SET);
+	HAL_GPIO_WritePin(ENM5_GPIO_Port, ENM5_Pin, SET);
+	HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, SET);
+	HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
+	GPIOB -> ODR &= 0x00ff;
+}
+
+int char_index = 0;
+void demoAllChar(){
+	setMatrixCharacter(char_index);
+	char_index = (char_index + 1) % 6;
 }

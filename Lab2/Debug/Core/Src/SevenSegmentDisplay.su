@@ -1,6 +1,9 @@
 SevenSegmentDisplay.c:11:6:display7SEG	16	static
 SevenSegmentDisplay.c:58:6:update7SEG	8	static
 SevenSegmentDisplay.c:99:6:updateClockBuffer	4	static
-SevenSegmentDisplay.c:110:6:updateMatrixBuffer	48	static
-SevenSegmentDisplay.c:123:6:setRowPin	4	static
-SevenSegmentDisplay.c:129:6:updateLEDMatrix	8	static
+SevenSegmentDisplay.c:110:6:setMatrixCharacter	16	static
+SevenSegmentDisplay.c:122:6:animationShiftLeft	16	static
+SevenSegmentDisplay.c:156:6:setRowPin	4	static
+SevenSegmentDisplay.c:162:6:updateLEDMatrix	8	static
+SevenSegmentDisplay.c:251:6:clearMatrix	8	static
+SevenSegmentDisplay.c:264:6:demoAllChar	8	static

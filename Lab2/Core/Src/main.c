@@ -29,11 +29,13 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define REFRESH_RATE 60
+#define TIMER_CYCLE 10
+#define SHIFT_CYCLE 2000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -70,7 +72,9 @@ int timer2_flag = 0;
 int timer3_counter = 0;
 int timer3_flag = 0;
 
-#define TIMER_CYCLE 10
+int timer4_counter = 0;
+int timer4_flag = 0;
+
 void setTimer0(int duration){
 	timer0_counter = duration / TIMER_CYCLE;
 	timer0_flag = 0;
@@ -89,6 +93,11 @@ void setTimer2(int duration){
 void setTimer3(int duration){
 	timer3_counter = duration / TIMER_CYCLE;
 	timer3_flag = 0;
+}
+
+void setTimer4(int duration){
+	timer4_counter = duration / TIMER_CYCLE;
+	timer4_flag = 0;
 }
 
 void timer_run(){
@@ -110,6 +119,11 @@ void timer_run(){
 	if(timer3_counter > 0){
 		timer3_counter--;
 		if(timer3_counter <= 0) timer3_flag = 1;
+	}
+
+	if(timer4_counter > 0){
+		timer4_counter--;
+		if(timer4_counter <= 0) timer4_flag = 1;
 	}
 }
 
@@ -156,9 +170,10 @@ int main(void)
   setTimer0(1000); //clock time update interval
   setTimer1(250);  //7 segment led update timer
   setTimer2(500);  //dot update timer
-  setTimer3(100);  //led matrix refresh rate
+  setTimer3(1000/REFRESH_RATE);  //led matrix refresh rate
+  setTimer4(SHIFT_CYCLE);  //shift animation timer
   updateClockBuffer();
-  GPIOB -> ODR &= 0x00ff;
+  clearMatrix();
   while (1)
   {
 	if(timer0_flag == 1){
@@ -176,6 +191,9 @@ int main(void)
 		}
 		updateClockBuffer();
 		setTimer0(1000);  //set timer0 for the next update
+
+		//10 second interval for changing letter on led matrix display
+		if(second % 10 == 0) demoAllChar();
 	}
 	if(timer1_flag == 1){
 		update7SEG();
@@ -187,9 +205,13 @@ int main(void)
 	}
 
 	if(timer3_flag == 1){
-		setTimer3(100);
-		updateMatrixBuffer();
+		setTimer3(1000/REFRESH_RATE);
 		updateLEDMatrix();
+	}
+
+	if(timer4_flag == 1){
+		setTimer4(SHIFT_CYCLE);
+		animationShiftLeft();
 	}
     /* USER CODE END WHILE */
 
