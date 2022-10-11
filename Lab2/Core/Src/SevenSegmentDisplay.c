@@ -54,15 +54,16 @@ void display7SEG(int num){
 const int MAX_LED = 4;
 int index_led = 0;
 int led_buffer[4] = {1, 2, 3, 4};
-void update7SEG(int index){
-	switch(index){
+
+void update7SEG(){
+	switch(index_led){
 		case 0:
 			//Display the first 7SEG with led_buffer[0]
 			HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
 			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 			HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
 			HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-			display7SEG(led_buffer[index]);
+			display7SEG(led_buffer[index_led]);
 			break;
 		case 1:
 			//Display the second 7SEG with led_buffer[1]
@@ -70,7 +71,7 @@ void update7SEG(int index){
 			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
 			HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
 			HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-			display7SEG(led_buffer[index]);
+			display7SEG(led_buffer[index_led]);
 			break;
 		case 2:
 			//Display the third 7SEG with led_buffer[2]
@@ -78,7 +79,7 @@ void update7SEG(int index){
 			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 			HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
 			HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-			display7SEG(led_buffer[index]);
+			display7SEG(led_buffer[index_led]);
 			break;
 		case 3:
 			//Display the forth 7SEG with led_buffer[3]
@@ -86,14 +87,14 @@ void update7SEG(int index){
 			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 			HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
 			HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, RESET);
-			display7SEG(led_buffer[index]);
+			display7SEG(led_buffer[index_led]);
 			break;
 		default:
 			break;
 	}
+	index_led = (index_led + 1) % 4;
 }
 
-int hour = 15, minute = 8, second = 50;
 
 void updateClockBuffer(){
 	led_buffer[0] = (hour / 10) % 10;

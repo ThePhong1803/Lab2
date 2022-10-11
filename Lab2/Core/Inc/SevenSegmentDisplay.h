@@ -9,17 +9,14 @@
 #define INC_SEVENSEGMENTDISPLAY_H_
 
 #include "main.h"
+#include "global.h"
 
-extern const int MAX_LED;
-extern int index_led;
-extern int led_buffer[4];
-
-extern int hour;
-extern int minute;
-extern int second;
+const int MAX_LED;
+int index_led;
+int led_buffer[4];
 
 void display7SEG(int num);
-void update7SEG(int index);
+void update7SEG();
 void updateClockBuffer();
 
 #endif /* INC_SEVENSEGMENTDISPLAY_H_ */
