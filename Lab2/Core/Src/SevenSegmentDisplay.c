@@ -121,15 +121,22 @@ void updateMatrixBuffer(){
 }
 
 void setRowPin(){
+	//first set the high byte of PORTB to 0 and preserve the low byte of PORTB
 	GPIOB -> ODR &= 0x00ff;
+	//shifted the value in buffer and add it to output data register of PORTB
 	GPIOB -> ODR += (matrix_buffer[index_row] << 8);
+	//update index of matrix row
 	index_row = (index_row + 1) % MAX_LED_MATRIX;
 }
 
 void updateLEDMatrix(){
+	//every time this fucntion is called, only one column is turn on
+	//set the row pin of the led matrix at row index and update row index
 	setRowPin();
+	//depend on value of index_led_matrix, each column of matrix is light up
 	switch(index_led_matrix){
 		case 0:
+			//turn on the first column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, RESET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -140,6 +147,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 1:
+			//turn on the second column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, RESET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -150,6 +158,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 2:
+			//turn on the third column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, RESET);
@@ -160,6 +169,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 3:
+			//turn on the forth column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -170,6 +180,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 4:
+			//turn on the fifth column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -180,6 +191,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 5:
+			//turn on the sixth column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -190,6 +202,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 6:
+			//turn on the seventh column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -200,6 +213,7 @@ void updateLEDMatrix(){
 			HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 			break;
 		case 7:
+			//turn on the eighth column
 			HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
 			HAL_GPIO_WritePin(ENM1_GPIO_Port, ENM1_Pin, SET);
 			HAL_GPIO_WritePin(ENM2_GPIO_Port, ENM2_Pin, SET);
@@ -212,5 +226,6 @@ void updateLEDMatrix(){
 		default:
 			break;
 	}
+	//update the the index of matrix column to turn on next
 	index_led_matrix = (index_led_matrix + 1) % MAX_LED_MATRIX;
 }
