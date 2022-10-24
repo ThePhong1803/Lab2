@@ -243,14 +243,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	//decrease the 7-segment counter and DOT led counter
 	counter7SEG--;
 	counterLed--;
-	//check if 7-segment counter reach 0
 	if(counter7SEG <= 0){
-		//reset the counter
 		counter7SEG = 50;
-		//check which led to light up
 		switch(index_led){
 			case 0:
-				//turn on 7-segment led 1
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
 				HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 				HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
@@ -259,7 +255,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			    index_led = 1;
 				break;
 			case 1:
-				//turn on 7-segment led 2
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
 				HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
 				HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
@@ -268,7 +263,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				index_led = 2;
 				break;
 			case 2:
-				//turn on 7-segment led 3
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
 				HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 				HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
@@ -277,7 +271,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				index_led = 3;
 				break;
 			case 3:
-				//turn on 7-segment led 4
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
 				HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 				HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
@@ -289,11 +282,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				break;
 		}
 	}
-	//check if the dot counter reach zero
 	if(counterLed <= 0){
-		//toggle DOT pin
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-		//reset the DOT counter
 		counterLed = 100;
 	}
 }

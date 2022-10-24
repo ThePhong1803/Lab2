@@ -648,16 +648,17 @@ static void MX_GPIO_Init(void)
  80004a0:	40010c00 	.word	0x40010c00
 
 080004a4 <HAL_TIM_PeriodElapsedCallback>:
-
-/* USER CODE BEGIN 4 */
-int counter7SEG = 50;
-int counterLed = 100;
-int index_led = 0;
+//timer interrupt function is being call every 10 ms
+//initial the counter for 7 segment led
+int counter7SEG = 50; //light up each 7-segment led every 500ms
+int counterLed = 100; //toggle DOT led every 1 second
+int index_led = 0;    //the index of 7-segment led to light up
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80004a4:	b580      	push	{r7, lr}
  80004a6:	b082      	sub	sp, #8
  80004a8:	af00      	add	r7, sp, #0
  80004aa:	6078      	str	r0, [r7, #4]
+	//decrease the 7-segment counter and DOT led counter
 	counter7SEG--;
  80004ac:	4b53      	ldr	r3, [pc, #332]	; (80005fc <HAL_TIM_PeriodElapsedCallback+0x158>)
  80004ae:	681b      	ldr	r3, [r3, #0]
@@ -670,15 +671,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80004ba:	3b01      	subs	r3, #1
  80004bc:	4a50      	ldr	r2, [pc, #320]	; (8000600 <HAL_TIM_PeriodElapsedCallback+0x15c>)
  80004be:	6013      	str	r3, [r2, #0]
+	//check if 7-segment counter reach 0
 	if(counter7SEG <= 0){
  80004c0:	4b4e      	ldr	r3, [pc, #312]	; (80005fc <HAL_TIM_PeriodElapsedCallback+0x158>)
  80004c2:	681b      	ldr	r3, [r3, #0]
  80004c4:	2b00      	cmp	r3, #0
  80004c6:	f300 8087 	bgt.w	80005d8 <HAL_TIM_PeriodElapsedCallback+0x134>
+		//reset the counter
 		counter7SEG = 50;
  80004ca:	4b4c      	ldr	r3, [pc, #304]	; (80005fc <HAL_TIM_PeriodElapsedCallback+0x158>)
  80004cc:	2232      	movs	r2, #50	; 0x32
  80004ce:	601a      	str	r2, [r3, #0]
+		//check which led to light up
 		switch(index_led){
  80004d0:	4b4c      	ldr	r3, [pc, #304]	; (8000604 <HAL_TIM_PeriodElapsedCallback+0x160>)
  80004d2:	681b      	ldr	r3, [r3, #0]
@@ -691,6 +695,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80004e8:	08000565 	.word	0x08000565
  80004ec:	0800059f 	.word	0x0800059f
 			case 0:
+				//turn on 7-segment led 1
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
  80004f0:	2200      	movs	r2, #0
  80004f2:	2140      	movs	r1, #64	; 0x40
@@ -721,6 +726,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				break;
  8000528:	e059      	b.n	80005de <HAL_TIM_PeriodElapsedCallback+0x13a>
 			case 1:
+				//turn on 7-segment led 2
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
  800052a:	2201      	movs	r2, #1
  800052c:	2140      	movs	r1, #64	; 0x40
@@ -751,6 +757,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				break;
  8000562:	e03c      	b.n	80005de <HAL_TIM_PeriodElapsedCallback+0x13a>
 			case 2:
+				//turn on 7-segment led 3
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
  8000564:	2201      	movs	r2, #1
  8000566:	2140      	movs	r1, #64	; 0x40
@@ -781,6 +788,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				break;
  800059c:	e01f      	b.n	80005de <HAL_TIM_PeriodElapsedCallback+0x13a>
 			case 3:
+				//turn on 7-segment led 4
 				HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
  800059e:	2201      	movs	r2, #1
  80005a0:	2140      	movs	r1, #64	; 0x40
@@ -818,15 +826,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80005da:	e000      	b.n	80005de <HAL_TIM_PeriodElapsedCallback+0x13a>
 				break;
  80005dc:	bf00      	nop
+	//check if the dot counter reach zero
 	if(counterLed <= 0){
  80005de:	4b08      	ldr	r3, [pc, #32]	; (8000600 <HAL_TIM_PeriodElapsedCallback+0x15c>)
  80005e0:	681b      	ldr	r3, [r3, #0]
  80005e2:	2b00      	cmp	r3, #0
  80005e4:	dc06      	bgt.n	80005f4 <HAL_TIM_PeriodElapsedCallback+0x150>
+		//toggle DOT pin
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
  80005e6:	2110      	movs	r1, #16
  80005e8:	4807      	ldr	r0, [pc, #28]	; (8000608 <HAL_TIM_PeriodElapsedCallback+0x164>)
  80005ea:	f000 fbcb 	bl	8000d84 <HAL_GPIO_TogglePin>
+		//reset the DOT counter
 		counterLed = 100;
  80005ee:	4b04      	ldr	r3, [pc, #16]	; (8000600 <HAL_TIM_PeriodElapsedCallback+0x15c>)
  80005f0:	2264      	movs	r2, #100	; 0x64
