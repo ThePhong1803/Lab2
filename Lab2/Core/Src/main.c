@@ -138,12 +138,13 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  /* USER CODE BEGIN WHILE */\
+  //setup the initial state of DOT led
   HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, RESET);
-  setTimer0(1000); //clock time update interval
-  setTimer1(250);  //7 segment led update timer
-  setTimer2(500);  //dot update tiemr
-  updateClockBuffer();
+  setTimer0(1000); 		//clock time update interval is set to 1 second
+  setTimer1(250);  		//7 segment led on time is set to 250 ms or 1Hz
+  setTimer2(1000);  		//dot update every 1 second
+  updateClockBuffer();  //initial clock buffer
   while (1)
   {
 	if(timer0_flag == 1){
@@ -168,7 +169,7 @@ int main(void)
 	}
 	if(timer2_flag == 1){
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-		setTimer2(500);
+		setTimer2(1000);
 	}
     /* USER CODE END WHILE */
 
