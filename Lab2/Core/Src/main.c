@@ -143,33 +143,45 @@ int main(void)
   HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, RESET);
   setTimer0(1000); 		//clock time update interval is set to 1 second
   setTimer1(250);  		//7 segment led on time is set to 250 ms or 1Hz
-  setTimer2(1000);  		//dot update every 1 second
   updateClockBuffer();  //initial clock buffer
   while (1)
   {
+	//check ì timer0_flag is set
 	if(timer0_flag == 1){
+		//update second
 		second++;
+		//check if second is overflow
 		if(second >= 60){
+			//reset second
 			second = 0;
+			//increase minute
 			minute++;
 		}
+		//check if minute is overflow
 		if(minute >= 60){
+			//reset minute
 			minute = 0;
+			//increase hour
 			hour++;
 		}
+		//check if hour is overflow
 		if(hour >= 24){
+			//reset hour
 			hour = 0;
 		}
+		//update hour and minute in clock buffer
 		updateClockBuffer();
-		setTimer0(1000);  //set timer0 for the next update
-	}
-	if(timer1_flag == 1){
-		update7SEG();
-		setTimer1(250);
-	}
-	if(timer2_flag == 1){
+		//toggle DOT led pin
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-		setTimer2(1000);
+		//set timer0 for the next update
+		setTimer0(1000);
+	}
+	//check if timer1_flag is set
+	if(timer1_flag == 1){
+		//turn on 7-segment led
+		update7SEG();
+		//reset the timer for the next update
+		setTimer1(250);
 	}
     /* USER CODE END WHILE */
 
