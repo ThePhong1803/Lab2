@@ -803,15 +803,17 @@ static void MX_GPIO_Init(void)
  80005cc:	40010c00 	.word	0x40010c00
 
 080005d0 <HAL_TIM_PeriodElapsedCallback>:
-
 /* USER CODE BEGIN 4 */
-int counter7SEG = 25;
-int counterLed = 100;
+//timer interrupt function is being every 10 ms
+//initial 7-segment led counter and DOT led counter
+int counter7SEG = 25; //7-segment light up duration is 250 ms, so the refresh rate is 1Hz
+int counterLed = 100; //DOT led is blinking every 1 second
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80005d0:	b580      	push	{r7, lr}
  80005d2:	b082      	sub	sp, #8
  80005d4:	af00      	add	r7, sp, #0
  80005d6:	6078      	str	r0, [r7, #4]
+	//decrease 7-segment and DOT led counter
 	counter7SEG--;
  80005d8:	4b18      	ldr	r3, [pc, #96]	; (800063c <HAL_TIM_PeriodElapsedCallback+0x6c>)
  80005da:	681b      	ldr	r3, [r3, #0]
@@ -824,20 +826,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  80005e6:	3b01      	subs	r3, #1
  80005e8:	4a15      	ldr	r2, [pc, #84]	; (8000640 <HAL_TIM_PeriodElapsedCallback+0x70>)
  80005ea:	6013      	str	r3, [r2, #0]
+	//check if 7-segment counter reach zero
 	if(counter7SEG <= 0){
  80005ec:	4b13      	ldr	r3, [pc, #76]	; (800063c <HAL_TIM_PeriodElapsedCallback+0x6c>)
  80005ee:	681b      	ldr	r3, [r3, #0]
  80005f0:	2b00      	cmp	r3, #0
  80005f2:	dc13      	bgt.n	800061c <HAL_TIM_PeriodElapsedCallback+0x4c>
+		//reset the counter
 		counter7SEG = 25;
  80005f4:	4b11      	ldr	r3, [pc, #68]	; (800063c <HAL_TIM_PeriodElapsedCallback+0x6c>)
  80005f6:	2219      	movs	r2, #25
  80005f8:	601a      	str	r2, [r3, #0]
+		//turn on 7-segment led at index_led
 		update7SEG(index_led);
  80005fa:	4b12      	ldr	r3, [pc, #72]	; (8000644 <HAL_TIM_PeriodElapsedCallback+0x74>)
  80005fc:	681b      	ldr	r3, [r3, #0]
  80005fe:	4618      	mov	r0, r3
  8000600:	f7ff fe46 	bl	8000290 <update7SEG>
+		//update 7-segment led index
 		index_led = (index_led + 1) % 4;
  8000604:	4b0f      	ldr	r3, [pc, #60]	; (8000644 <HAL_TIM_PeriodElapsedCallback+0x74>)
  8000606:	681b      	ldr	r3, [r3, #0]
@@ -850,15 +856,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  8000618:	4a0a      	ldr	r2, [pc, #40]	; (8000644 <HAL_TIM_PeriodElapsedCallback+0x74>)
  800061a:	6013      	str	r3, [r2, #0]
 	}
+	//check if DOT led counter reach zero
 	if(counterLed <= 0){
  800061c:	4b08      	ldr	r3, [pc, #32]	; (8000640 <HAL_TIM_PeriodElapsedCallback+0x70>)
  800061e:	681b      	ldr	r3, [r3, #0]
  8000620:	2b00      	cmp	r3, #0
  8000622:	dc06      	bgt.n	8000632 <HAL_TIM_PeriodElapsedCallback+0x62>
+		//toggle DOT led pin
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
  8000624:	2110      	movs	r1, #16
  8000626:	4808      	ldr	r0, [pc, #32]	; (8000648 <HAL_TIM_PeriodElapsedCallback+0x78>)
  8000628:	f000 fbcc 	bl	8000dc4 <HAL_GPIO_TogglePin>
+		//resset the counter
 		counterLed = 100;
  800062c:	4b04      	ldr	r3, [pc, #16]	; (8000640 <HAL_TIM_PeriodElapsedCallback+0x70>)
  800062e:	2264      	movs	r2, #100	; 0x64

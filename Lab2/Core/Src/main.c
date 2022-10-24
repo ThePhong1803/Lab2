@@ -235,18 +235,28 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-int counter7SEG = 25;
-int counterLed = 100;
+//timer interrupt function is being every 10 ms
+//initial 7-segment led counter and DOT led counter
+int counter7SEG = 25; //7-segment light up duration is 250 ms, so the refresh rate is 1Hz
+int counterLed = 100; //DOT led is blinking every 1 second
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	//decrease 7-segment and DOT led counter
 	counter7SEG--;
 	counterLed--;
+	//check if 7-segment counter reach zero
 	if(counter7SEG <= 0){
+		//reset the counter
 		counter7SEG = 25;
+		//turn on 7-segment led at index_led
 		update7SEG(index_led);
+		//update 7-segment led index
 		index_led = (index_led + 1) % 4;
 	}
+	//check if DOT led counter reach zero
 	if(counterLed <= 0){
+		//toggle DOT led pin
 		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+		//resset the counter
 		counterLed = 100;
 	}
 }
