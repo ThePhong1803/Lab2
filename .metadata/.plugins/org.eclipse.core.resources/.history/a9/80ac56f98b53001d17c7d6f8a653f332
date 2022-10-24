@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "SevenSegmentDisplay.h"
+#include "global.h"
 
 /* USER CODE END Includes */
 
@@ -59,10 +60,27 @@ static void MX_TIM2_Init(void);
 /* USER CODE BEGIN 0 */
 int timer0_counter = 0;
 int timer0_flag = 0;
-int TIMER_CYCLE = 10;
+
+int timer1_counter = 0;
+int timer1_flag = 0;
+
+int timer2_counter = 0;
+int timer2_flag = 0;
+
+#define TIMER_CYCLE 10
 void setTimer0(int duration){
 	timer0_counter = duration / TIMER_CYCLE;
 	timer0_flag = 0;
+}
+
+void setTimer1(int duration){
+	timer1_counter = duration / TIMER_CYCLE;
+	timer1_flag = 0;
+}
+
+void setTimer2(int duration){
+	timer2_counter = duration / TIMER_CYCLE;
+	timer2_flag = 0;
 }
 
 void timer_run(){
@@ -70,7 +88,20 @@ void timer_run(){
 		timer0_counter--;
 		if(timer0_counter <= 0) timer0_flag = 1;
 	}
+
+	if(timer1_counter > 0){
+		timer1_counter--;
+		if(timer1_counter <= 0) timer1_flag = 1;
+	}
+
+	if(timer2_counter > 0){
+		timer2_counter--;
+		if(timer2_counter <= 0) timer2_flag = 1;
+	}
 }
+
+//initial timer for clock
+int hour = 23, minute = 59, second = 50;
 /* USER CODE END 0 */
 
 /**
@@ -107,9 +138,12 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  int hour = 0, minute = 0, second = 0;
-  setTimer0(1000);
+  /* USER CODE BEGIN WHILE */\
+  //setup the initial state of DOT led
+  HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, RESET);
+  setTimer0(1000); 		//clock time update interval is set to 1 second
+  setTimer1(250);  		//7 segment led on time is set to 250 ms or 1Hz
+  updateClockBuffer();  //initial clock buffer
   while (1)
   {
 	if(timer0_flag == 1){
@@ -126,7 +160,12 @@ int main(void)
 			hour = 0;
 		}
 		updateClockBuffer();
-		setTimer0(1000);
+    HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+		setTimer0(1000);  //set timer0 for the next update
+	}
+	if(timer1_flag == 1){
+		update7SEG();
+		setTimer1(250);
 	}
     /* USER CODE END WHILE */
 
@@ -257,8 +296,18 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+//timer interrupt fucntion being call every 10 ms
+//initial 7-segment counter to light up 7-setgment led every 250 ms
+int updateCounter = 25; 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timer_run();
+  //decrease 7-segment counter
+  updateCounter--;
+  if(updateCoutner == 0){
+    //reset the counter
+    updateCounter = 25;
+    update7SEG();
+  }
 }
 
 /* USER CODE END 4 */

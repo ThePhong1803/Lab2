@@ -142,35 +142,39 @@ int main(void)
   //setup the initial state of DOT led
   HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, RESET);
   setTimer0(1000); 		//clock time update interval is set to 1 second
-  setTimer1(250);  		//7 segment led on time is set to 250 ms or 1Hz
-  setTimer2(1000);  		//dot update every 1 second
   updateClockBuffer();  //initial clock buffer
   while (1)
   {
-	if(timer0_flag == 1){
-		second++;
-		if(second >= 60){
-			second = 0;
-			minute++;
-		}
-		if(minute >= 60){
-			minute = 0;
-			hour++;
-		}
-		if(hour >= 24){
-			hour = 0;
-		}
-		updateClockBuffer();
-		setTimer0(1000);  //set timer0 for the next update
-	}
-	if(timer1_flag == 1){
-		update7SEG();
-		setTimer1(250);
-	}
-	if(timer2_flag == 1){
-		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-		setTimer2(1000);
-	}
+	  //check ì timer0_flag is set
+	  	if(timer0_flag == 1){
+	  		//update second
+	  		second++;
+	  		//check if second is overflow
+	  		if(second >= 60){
+	  			//reset second
+	  			second = 0;
+	  			//increase minute
+	  			minute++;
+	  		}
+	  		//check if minute is overflow
+	  		if(minute >= 60){
+	  			//reset minute
+	  			minute = 0;
+	  			//increase hour
+	  			hour++;
+	  		}
+	  		//check if hour is overflow
+	  		if(hour >= 24){
+	  			//reset hour
+	  			hour = 0;
+	  		}
+	  		//update hour and minute in clock buffer
+	  		updateClockBuffer();
+	  		//toggle DOT led pin
+	  		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+	  		//set timer0 for the next update
+	  		setTimer0(1000);
+	  	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -300,10 +304,18 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-int updateCounter = 0;
-int i = 0;
+//timer interrupt fucntion being call every 10 ms
+//initial 7-segment counter to light up 7-setgment led every 250 ms
+int updateCounter = 25; 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timer_run();
+  //decrease 7-segment counter
+  updateCounter--;
+  if(updateCounter == 0){
+    //reset the counter
+    updateCounter = 25;
+    update7SEG();
+  }
 }
 
 /* USER CODE END 4 */
