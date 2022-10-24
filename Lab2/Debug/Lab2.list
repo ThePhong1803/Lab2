@@ -421,12 +421,14 @@ void update7SEG(int index){
  80003b8:	20000000 	.word	0x20000000
 
 080003bc <updateClockBuffer>:
+//time initial variable
+int hour = 15, minute = 8, second = 50;
 
-int hour = 23, minute = 59, second = 55;
 
 void updateClockBuffer(){
  80003bc:	b480      	push	{r7}
  80003be:	af00      	add	r7, sp, #0
+	//extract the second digit of hour
 	led_buffer[0] = (hour / 10) % 10;
  80003c0:	4b25      	ldr	r3, [pc, #148]	; (8000458 <updateClockBuffer+0x9c>)
  80003c2:	681b      	ldr	r3, [r3, #0]
@@ -447,6 +449,7 @@ void updateClockBuffer(){
  80003e4:	1aca      	subs	r2, r1, r3
  80003e6:	4b1e      	ldr	r3, [pc, #120]	; (8000460 <updateClockBuffer+0xa4>)
  80003e8:	601a      	str	r2, [r3, #0]
+	//extract the first digit of hour
 	led_buffer[1] = hour % 10;
  80003ea:	4b1b      	ldr	r3, [pc, #108]	; (8000458 <updateClockBuffer+0x9c>)
  80003ec:	6819      	ldr	r1, [r3, #0]
@@ -462,6 +465,7 @@ void updateClockBuffer(){
  8000402:	1aca      	subs	r2, r1, r3
  8000404:	4b16      	ldr	r3, [pc, #88]	; (8000460 <updateClockBuffer+0xa4>)
  8000406:	605a      	str	r2, [r3, #4]
+	//extract the second digit of second
 	led_buffer[2] = (minute / 10) % 10;
  8000408:	4b16      	ldr	r3, [pc, #88]	; (8000464 <updateClockBuffer+0xa8>)
  800040a:	681b      	ldr	r3, [r3, #0]
@@ -482,6 +486,7 @@ void updateClockBuffer(){
  800042c:	1aca      	subs	r2, r1, r3
  800042e:	4b0c      	ldr	r3, [pc, #48]	; (8000460 <updateClockBuffer+0xa4>)
  8000430:	609a      	str	r2, [r3, #8]
+	//extract the first digit of second
 	led_buffer[3] = minute % 10;
  8000432:	4b0c      	ldr	r3, [pc, #48]	; (8000464 <updateClockBuffer+0xa8>)
  8000434:	6819      	ldr	r1, [r3, #0]

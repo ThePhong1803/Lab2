@@ -92,12 +92,17 @@ void update7SEG(int index){
 			break;
 	}
 }
-
+//time initial variable
 int hour = 15, minute = 8, second = 50;
 
+
 void updateClockBuffer(){
+	//extract the second digit of hour
 	led_buffer[0] = (hour / 10) % 10;
+	//extract the first digit of hour
 	led_buffer[1] = hour % 10;
+	//extract the second digit of second
 	led_buffer[2] = (minute / 10) % 10;
+	//extract the first digit of second
 	led_buffer[3] = minute % 10;
 }
